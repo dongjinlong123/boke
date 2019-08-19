@@ -1,18 +1,23 @@
 ﻿
 //接口
-var getAnnouncement = "./js/intf/getAnnouncement.json"
+var getAnnouncement = "./js/intf/getAnnouncement.json";
 /*var getArticleList = "./js/intf/getArticleList.json"*/
-var getArticleList = "http://localhost:8081/intf/getArticleList"
+var getArticleList = "http://localhost:8081/intf/getArticleList";
+
+//推荐内容信息
+//var getArticleRecommend = "./js/intf/getArticleRecommend.json";
+var getArticleRecommend = "http://localhost:8081/intf/getArticleRecommend";
 
 //页次
 var pageSize = 2;
 var pagination = 0;
 
 var laytpl;
+var layer;
 layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
     var $ = layui.jquery;
     var flow = layui.flow;
-    var layer = layui.layer;
+    layer = layui.layer;
     laytpl = layui.laytpl;
 
     var width = width || window.innerWeight || document.documentElement.clientWidth || document.body.clientWidth;
@@ -30,13 +35,7 @@ layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
     });
 
 
-    $(".recent-list .hotusers-list-item").mouseover(function () {
-        var name = $(this).children(".remark-user-avator").attr("data-name");
-        var str = "【"+name+"】的评论";
-        layer.tips(str, this, {
-            tips: [2,'#666666']
-        });
-    });
+
 
 
     $("#QQjl").mouseenter(function(){
@@ -91,6 +90,8 @@ layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
         $(".fa-home").parent().parent().addClass("layui-this");
         initAnnouncement();
         initArticle();
+        initArticleRecommend();
+
     });
 });
 
@@ -128,7 +129,82 @@ function initArticle(){
     });
 }
 
-//初始化消息
+
+
+//初始化推荐信息
+function initArticleRecommend(){
+    var url = getArticleRecommend;
+    $.ajax({
+        url:url,
+        type:'get',
+        beforeSend:function () {
+            this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
+        },
+        success:function(data){
+            console.log(data)
+            var clickRecommendList = {"clickRecommendList":data.clickRecommendList};
+           var commentRecommendList = {"commentRecommendList":data.commentRecommendList};
+           var commentUserList = {"commentUserList":data.commentUserList};
+          // var commentList = {"commentList":data.commentList};
+
+
+            var c1 = $("#clickRecommendList");
+            var c1_Intf = $("#clickRecommendListIntf");
+            var getTpl_1 = c1_Intf.html();
+            laytpl(getTpl_1).render(clickRecommendList, function(html){
+                c1.html(html);
+            });
+            var c2 = $("#commentRecommendList");
+            var c2_Intf = $("#commentRecommendListIntf");
+            var getTpl_2 = c2_Intf.html();
+            laytpl(getTpl_2).render(commentRecommendList, function(html){
+                c2.html(html);
+            });
+
+             var c3 = $("#commentUserList");
+            var c3_Intf = $("#commentUserListIntf");
+            var getTpl_3 = c3_Intf.html();
+            laytpl(getTpl_3).render(commentUserList, function(html){
+                c3.html(html);
+            });
+
+          /*  var c4 = $("#commentList");
+            var c4_Intf = $("#commentListIntf");
+            var getTpl_4 = c4_Intf.html();
+            laytpl(getTpl_4).render(commentList, function(html){
+                c4.html(html);
+            });*/
+
+           var html = "";
+            for(var i=0;i<data.commentList.length;i++){
+                var item = data.commentList[i];
+                html += '<li class="hotusers-list-item">'+
+                    '<div data-name="'+ item.nickName +'" class="remark-user-avator">'+
+                    ' <img src="'+ item.userPic +'" width="45" height="45">'+
+                    ' </div>'+
+                    '  <div class="remark-content">'+ item.content+'</div>'+
+                    '  <span class="hotusers-icons"></span></li>';
+            }
+            $("#commentList").html(html);
+
+            //增加事件
+            $(".recent-list .hotusers-list-item").mouseover(function () {
+                var name = $(this).children(".remark-user-avator").attr("data-name");
+                var str = "【"+name+"】的评论";
+                layer.tips(str, this, {
+                    tips: [2,'#666666']
+                });
+            });
+
+        },
+        complete: function () {
+            layer.close(this.layerIndex);
+        }
+    });
+}
+
+
+//初始化通知消息
 function initAnnouncement(){
     var url = getAnnouncement;
     $.ajax({

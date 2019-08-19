@@ -127,7 +127,12 @@
 									</div>
 									<div class="clear"></div>
 									<div class="article-footer">
-										<span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;{{item.createdAtFmt}}</span>
+										{{#
+											var fn = function(data){
+												return new Date(data).toLocaleDateString();
+											};
+										}}
+										<span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;{{fn(item.createdAt)}}</span>
 										<span class="article-author"><i class="fa fa-user"></i>&nbsp;&nbsp;' {{item.author}}</span>
 										<span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="javascript:classifyList(10);"> {{item.category}}</a></span>
 										<span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;{{item.readCounts}}</span>
@@ -175,267 +180,98 @@
 								<li>站长推荐</li>
 							</ul>
 							<div class="layui-tab-content">
-								<div class="layui-tab-item layui-show">
-									<ul class="blog-module-ul">
-										<li>
+
+
+
+								<div class="layui-tab-item layui-show" id="clickRecommendList">
+									<script id="clickRecommendListIntf" type="text/html">
+
+										<ul class="blog-module-ul">
+											{{#  layui.each(d.clickRecommendList, function(index, item){ }}
+											<li>
 											<span>
-<i class="layui-badge-rim layui-bg-red">1</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Tomcat优化性能，JVM优化</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim layui-bg-orange">2</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Redis安装</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim layui-bg-green">3</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring boot 使用 JSP</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">4</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring Boot 表单验证@Valid</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">5</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring boot 的核心配置文件</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">6</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">Centos7安装和配置jre1.8</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">7</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">centos7对外开放端口</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">8</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">怎么关闭eclipse对js xml的验证?</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">9</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">向百度主动推送以加快网页的收录速度！</a>
-										</li>
-										<li>
-											<span>
-<i class="layui-badge-rim">10</i>
-</span> &nbsp;&nbsp;
-											<a href="detail.html">支付宝开发者入驻</a>
-										</li>
-									</ul>
+												<i class="layui-badge-rim
+												{{#  if(index == 0){ }}
+												layui-bg-red
+												 {{#  } }}
+												 {{#  if(index == 1){ }}
+												layui-bg-orange
+												 {{#  } }}
+												 {{#  if(index == 2){ }}
+												layui-bg-green
+												 {{#  } }}
+												 "
+												>{{index +1}}</i>
+												</span> &nbsp;&nbsp;
+												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+											</li>
+											{{#  }); }}
+										</ul>
+									</script>
+
 								</div>
-								<div class="layui-tab-item">
+
+
+
+
+								<div class="layui-tab-item" id="commentRecommendList">
+									<script id="commentRecommendListIntf" type="text/html">
+
 									<ul class="blog-module-ul">
+										{{#  layui.each(d.commentRecommendList, function(index, item){ }}
 										<li>
 											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Tomcat优化性能，JVM优化</a>
+											<a href="detail.html?id={{item.id}}">{{item.title}}</a>
 										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Redis安装</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring boot 使用 JSP</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring Boot 表单验证@Valid</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Spring boot 的核心配置文件</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">Centos7安装和配置jre1.8</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">centos7对外开放端口</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">怎么关闭eclipse对js xml的验证?</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">向百度主动推送以加快网页的收录速度！</a>
-										</li>
-										<li>
-											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html">支付宝开发者入驻</a>
-										</li>
+										{{#  }); }}
 									</ul>
+									</script>
 								</div>
 							</div>
 						</div>
 
 						<div class="blog-module shadow animated fadeInRight">
 							<div class="blog-module-title"><i class="fa fa-file-text-o"></i>&nbsp;博主介绍</div>
-							<p>Longwang，一枚90后的java程序员，好奇心比较强，目前是一个码农，从事Java方向的研究和开发。-- Longwang</p>
+							<p>挫挫，一枚90后的java程序员，人间不值得，生活好难，我好烦！</p>
 						</div>
 						<div class="blog-module shadow animated fadeInRight fadeInUp">
 							<div class="blog-module-title"><i class="layui-icon"></i>&nbsp;热评用户</div>
-							<ul class="hotusers-list">
+							<ul class="hotusers-list" id="commentUserList">
+								<script id="commentUserListIntf" type="text/html">
+								{{#  layui.each(d.commentUserList, function(index, item){ }}
+
 								<li class="hotusers-list-item">
-									<div class="hotusers-top hotusers-num">1</div>
+									<div class="hotusers-top hotusers-num">{{index + 1}}</div>
 									<div class="hotusers-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/B5D5212D0429E4491D932EEEF814FE99/100" width="45" height="45">
+										<img src="{{item.userPic}}" width="45" height="45">
 									</div>
 									<div>
-										<div class="hotusers-nick">Mr.Long</div>
-										<span class="hotusers-level" title="等级1" style="background-image: url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01.png);">
-<i style=" background-image:url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01-04.png);">潜水</i>
-</span>
-										<span class="hotusers-totalcmt">本站评论数：4</span>
+										<div class="hotusers-nick">{{item.nickName}}</div>
+										<span class="hotusers-level" title="等级{{index+1}}" style="background-image: url(./img/p-lv0{{index+1}}.png);">
+										<i style=" background-image:url(./img/p-lv01-04.png);">潜水</i>
+										</span>
+										<span class="hotusers-totalcmt">本站评论数：{{item.commentNum}}</span>
 									</div>
 									<span class="hotusers-icons"></span>
 								</li>
-								<li class="hotusers-list-item">
-									<div class="hotusers-top hotusers-num">2</div>
-									<div class="hotusers-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/142350DC6080D761759CA72042447829/100" width="45" height="45">
-									</div>
-									<div>
-										<div class="hotusers-nick">十七</div>
-										<span class="hotusers-level" title="等级2" style="background-image: url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv02.png);">
-<i style=" background-image:url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01-04.png);">潜水</i>
-</span>
-										<span class="hotusers-totalcmt">本站评论数：2</span>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div class="hotusers-top hotusers-num">3</div>
-									<div class="hotusers-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/436C863FE45FEBC7D279B0C22E9A62FD/100" width="45" height="45">
-									</div>
-									<div>
-										<div class="hotusers-nick">默〃</div>
-										<span class="hotusers-level" title="等级3" style="background-image: url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv03.png);">
-<i style=" background-image:url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01-04.png);">潜水</i>
-</span>
-										<span class="hotusers-totalcmt">本站评论数：2</span>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div class="hotusers-top hotusers-num">4</div>
-									<div class="hotusers-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/2F1EDDE252859E5FF645F959893C6863/100" width="45" height="45">
-									</div>
-									<div>
-										<div class="hotusers-nick">Single</div>
-										<span class="hotusers-level" title="等级4" style="background-image: url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv04.png);">
-<i style=" background-image:url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01-04.png);">潜水</i>
-</span>
-										<span class="hotusers-totalcmt">本站评论数：1</span>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div class="hotusers-top hotusers-num">5</div>
-									<div class="hotusers-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/0ABFEA14AAF50D3C07B6489440FEE081/100" width="45" height="45">
-									</div>
-									<div>
-										<div class="hotusers-nick">一念之间</div>
-										<span class="hotusers-level" title="等级5" style="background-image: url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv05.png);">
-<i style=" background-image:url(https://changyan.itc.cn/v2/asset/scs/imgs/p-lv01-04.png);">潜水</i>
-</span>
-										<span class="hotusers-totalcmt">本站评论数：1</span>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-							</ul>
+								{{#  }); }}
+								</script>
+								</ul>
 						</div>
 						<div class="blog-module shadow animated fadeInRight fadeInUp">
 							<div class="blog-module-title"><i class="layui-icon"></i>&nbsp;最近评论</div>
-							<ul class="recent-list">
+							<ul class="recent-list" id="commentList">
+							<!--	<script id="commentListIntf" type="text/html">
+									{{#  layui.each(d.commentList, function(index, item){ }}
 								<li class="hotusers-list-item">
-									<div data-name="那么平凡。" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/194135EDCD4659E5550C71D6D665F3CB/100" width="45" height="45">
+									<div data-name="{{item.nickName}}" class="remark-user-avator">
+										<img src="{{item.userPic}}" width="45" height="45">
 									</div>
-									<div class="remark-content">博主威武</div>
+									<div class="remark-content">{{item.content}}</div>
 									<span class="hotusers-icons"></span>
 								</li>
-								<li class="hotusers-list-item">
-									<div data-name="开始了就别停下来" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/436973EA919FEE0B67860BEC897ECC70/100" width="45" height="45">
-									</div>
-									<div class="remark-content">uiu</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="【阿龙】" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/6B925BE6DA65C32DCBE03772E56AA6C6/100" width="45" height="45">
-									</div>
-									<div class="remark-content">111</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="Mr.Long" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/B5D5212D0429E4491D932EEEF814FE99/100" width="45" height="45">
-									</div>
-									<div class="remark-content">还不错</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="清风" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/B4901BFB60F8DEE83F01692F2544E612/100" width="45" height="45">
-									</div>
-									<div class="remark-content">
-										<p>网站开源吗</p>
-										<p><br></p>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="Mr.Long" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/B5D5212D0429E4491D932EEEF814FE99/100" width="45" height="45">
-									</div>
-									<div class="remark-content">。。。。。。。。。。</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="默〃" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/436C863FE45FEBC7D279B0C22E9A62FD/100" width="45" height="45">
-									</div>
-									<div class="remark-content">
-										<p>旧时光博客博主&nbsp;https://www.zqfirst.top 来过</p>
-									</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="默〃" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/436C863FE45FEBC7D279B0C22E9A62FD/100" width="45" height="45">
-									</div>
-									<div class="remark-content">网站不错，继续加油。</div>
-									<span class="hotusers-icons"></span>
-								</li>
-								<li class="hotusers-list-item">
-									<div data-name="十七" class="remark-user-avator">
-										<img src="http://qzapp.qlogo.cn/qzapp/101477629/142350DC6080D761759CA72042447829/100" width="45" height="45">
-									</div>
-									<div class="remark-content">网站不错，学到东西了</div>
-									<span class="hotusers-icons"></span>
-								</li>
+									{{#  }); }}
+								</script>-->
 							</ul>
 						</div>
 
