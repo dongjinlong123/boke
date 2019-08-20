@@ -9,12 +9,19 @@ var getArticleList = "http://localhost:8081/intf/getArticleList";
 var getArticleRecommend = "http://localhost:8081/intf/getArticleRecommend";
 
 //页次
-var pageSize = 2;
-var pagination = 0;
+var pageSize = 8;
 
 var laytpl;
 var layer;
-layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
+/**
+ * 格式化时间戳
+ * @param data
+ * @returns {string}
+ */
+function fn(data){
+    return new Date(data).toLocaleDateString();
+};
+layui.use(['jquery','carousel','flow','layer','laytpl','flow'], function () {
     var $ = layui.jquery;
     var flow = layui.flow;
     layer = layui.layer;
@@ -33,8 +40,54 @@ layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
       ,anim: 'default' //切换动画方式
       
     });
+    var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+    var flow = layui.flow;
+    flow.load({
+        elem: '#parentArticleList', //指定列表容器
+        isAuto:true,
+        mb:800,
+        done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+            console.log(page)
+            var lis = [];
+            //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从1开始返回）
+            $.get(getArticleList+'?pageSize='+pageSize+'&pagination='+(page-1), function(res){
+                //假设你的列表返回在data集合中
+                console.log(res)
+                layui.each(res.result, function(index, item){
+                    var html = '<div class="article shadow animated zoomIn">' +
+                        '<div class="article-left ">' +
+                        '<img src="{{item.listPic}}" alt="{{item.title}}">' +
+                        '</div>' +
+                        '<div class="article-right">' +
+                        ' <div class="article-title">';
 
+                    if (item.topFlag == 1) {
+                        html += '<span class="article_is_top">置顶</span>&nbsp;';
+                    }
+                    html += '<span class="article_is_yc">原创</span>&nbsp;' +
+                        '<a href="detail.html?id='+item.id+'">' + item.title + '</a>' +
+                        '</div><div class="article-abstract">' +
+                        item.excerpt + '</div></div>' +
+                        ' <div class="clear"></div><div class="article-footer">' +
+                        ' <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + fn(item.createdAt) + '</span>' +
+                        ' <span class="article-author"><i class="fa fa-user"></i>&nbsp;&nbsp;' + item.author + '</span>' +
+                        ' <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="javascript:classifyList(10);"> ' + item.category + '</a></span>' +
+                        ' <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;' + item.readCounts + '</span>' +
+                        '  <span class="article-viewinfo"><i class="fa fa-commenting"></i>&nbsp;' + item.commentCounts + '</span>' +
+                        '  </div>' +
+                        ' </div>';
 
+                    lis.push(html);
+                });
+
+                //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                var pages = Math.ceil(parseInt(res.count)/pageSize);
+                next(lis.join(''), page < pages);
+            });
+
+        }
+    });
 
 
 
@@ -89,47 +142,11 @@ layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
     $(function () {
         $(".fa-home").parent().parent().addClass("layui-this");
         initAnnouncement();
-        initArticle();
+        //initArticle();
         initArticleRecommend();
 
     });
 });
-
-function addMore(e){
-    console.log(e)
-    $(e).hide();
-    pagination +=1;
-    initArticle();
-}
-
-
-//初始化文章信息
-function initArticle(){
-    var url = getArticleList;
-    $.ajax({
-        url:url,
-        type:'get',
-        data:{pageSize:pageSize,pagination:pagination},
-        beforeSend:function () {
-            this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
-        },
-        success:function(data){
-            var data = {"articleList":data.result};
-            var parentArticleList = $("#parentArticleList");
-            var articleListIntf = $("#articleListIntf");
-            var getTpl = articleListIntf.html();
-            //传递值到页面
-            laytpl(getTpl).render(data, function(html){
-                parentArticleList.append(html);
-            });
-        },
-        complete: function () {
-            layer.close(this.layerIndex);
-        }
-    });
-}
-
-
 
 //初始化推荐信息
 function initArticleRecommend(){
@@ -251,6 +268,3 @@ function playAnnouncement(interval) {
 function classifyList(id){
     	layer.msg('功能要自己写');
 }
-
-
-

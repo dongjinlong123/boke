@@ -107,7 +107,7 @@
 					<div class="blog-main-left animated slideInLeft">
 						<div class="flow-default" id="parentArticleList">
 							<!-- 文章列表 -->
-							<script id="articleListIntf" type="text/html">
+							<!--<script id="articleListIntf" type="text/html">
 								{{#  layui.each(d.articleList, function(index, item){ }}
 								<div class="article shadow animated zoomIn">
 									<div class="article-left ">
@@ -140,17 +140,17 @@
 									</div>
 								</div>
 								{{#  }); }}
-								{{#  if(d.articleList.length === 0){ }}
+								{{#  if(d.hasNext == false){ }}
 								<div class="layui-flow-more">
-									<a href="javascript:;"><cite></cite></a>
+									<a href="javascript:;"><cite>加载完成</cite></a>
 								</div>
 								{{#  } }}
-								{{#  if(d.articleList.length != 0){ }}
+								{{#  if(d.hasNext == true){ }}
 								<div class="layui-flow-more">
-									<a href="javascript:;" onclick="addMore(this);"><cite>加载更多</cite></a>
+									<a href="javascript:;" class="addMore layui-show" onclick="addMore(this);"><cite>加载更多</cite></a>
 								</div>
 								{{#  } }}
-							</script>
+							</script>-->
 						</div>
 					</div>
 
