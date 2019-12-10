@@ -1,4 +1,4 @@
-﻿var _contextPath = "/blog_v2.0";
+﻿
 layui.use(['element', 'layer', 'util', 'form'], function () {
     var $ = layui.jquery;
     var layer = layui.layer;
@@ -131,8 +131,36 @@ layui.use(['element', 'layer', 'util', 'form'], function () {
     
     $(function(){
     	//isUser();
+        checkSession()
     });
-    
+
+
+    function checkSession(){
+        var loginFlag = MyLocalStorage.get("login");
+        if(loginFlag != true){
+            //浏览器无登录记录，未登录
+            $.ajax({
+                type: "GET",
+                url: "https://dongjinlong123.xyz/qq/checkSession",
+                data: null,
+                success: function(res) {
+                    console.log(res)
+                    if(res.login == false){
+                        //尚未登录
+                        console.log("尚未登录")
+                        MyLocalStorage.put("login",false,600);
+                    }else{
+                        console.log("已登录")
+                        MyLocalStorage.put("login",true,600);
+                    }
+                }});
+        }else{
+            //已登录
+            console.log("已登录")
+            MyLocalStorage.put("login",true,600);
+        }
+
+    }
     
     /*
     $(".user-out").click(function(){
@@ -235,3 +263,55 @@ function formatDate(str) {
 	return new Date(ymd[0],ymd[1]-1||0,ymd[2]||0,hms[0]||0,hms[1]||0,hms[2]||0);
 }
 
+/**
+ * 格式化时间戳
+ * @param data
+ * @returns {string}
+ */
+function fn(data){
+    return new Date(data).toLocaleDateString();
+}
+
+/**
+ * 得到url上的参数
+ * @param searchKey
+ * @returns {*}
+ */
+function getQueryString(searchKey){
+    var urlSerach = location.search
+    if(urlSerach.length > 0){
+        if(typeof(queryJson) === "undefined"){
+            var queryJson = {}
+            var arr = urlSerach.substring(1,urlSerach.length).split("&") //去掉?
+            for(i in arr){
+                var n = arr[i].indexOf("=")
+                var key = arr[i].substring(0,n)
+                var value = arr[i].substring(n+1,arr[i].length)
+                queryJson[key]=value
+            }
+            console.log(queryJson)
+        }
+        if(queryJson[searchKey] != "undefined"){
+            return queryJson[searchKey]
+        }
+    }
+    return undefined
+}
+function qqLogin(){
+    //qq登录功能
+    var loginFlag = MyLocalStorage.get("login");
+    if(loginFlag != true){
+        openWindow("https://dongjinlong123.xyz/qq/qqLogin?callBackUrl="+location.href)
+    }
+}
+/**
+ * 封装一个居中打开新窗口的方法
+ */
+function openWindow(url, width, height)
+{
+    width = width || 600;
+    height = height || 400;
+    var left = (window.screen.width - width) / 2;
+    var top = (window.screen.height - height) / 2;
+    window.open(url, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, left="+left+", top="+top+", width="+width+", height="+height);
+}

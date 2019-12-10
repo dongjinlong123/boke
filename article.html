@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; Charset=utf-8" />
 		<meta http-equiv="Content-Language" content="zh-CN" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<title>Long博客-文章专栏</title>
+		<title>挫挫个人记事本-文章专栏</title>
 		<link rel="shortcut icon" href="images/logo.png" type="image/x-icon" />
 		<!--Layui-->
 		<link href="layui/css/layui.css" rel="stylesheet" />
@@ -24,11 +24,11 @@
 		<nav id="h" class="blog-nav layui-header">
 			<div class="blog-container">
 
-				<a href="/QQ/qqLogin" class="blog-user">
+				<a href="javaScript:void(0)" onclick="qqLogin();"  class="blog-user">
 					<i class="fa fa-qq"></i>
 				</a>
 
-				<a class="blog-logo" href="index.html">Long</a>
+				<a class="blog-logo" href="index.html">挫挫</a>
 
 				<ul class="layui-nav" lay-filter="nav">
 					<li class="layui-nav-item">
@@ -63,9 +63,9 @@
 				</blockquote>
 				<div class="blog-main">
 
-					<div id="parentArticleList" class="blog-main-left animated slideInLeft">
-						<div class="flow-default" id="articleList">
-							<div class="article shadow animated zoomIn">
+					<div class="blog-main-left animated slideInLeft">
+						<div class="flow-default" id="parentArticleList" >
+						<!--	<div class="article shadow animated zoomIn">
 								<div class="article-left ">
 									<img src="img/jzytp.JPG" alt="Tomcat优化性能，JVM优化">
 								</div>
@@ -140,7 +140,7 @@
 										<a href="detail.html">Spring boot 使用 JSP</a>
 									</div>
 									<div class="article-abstract">
-										1、在pom.xml文件中配置依赖项 &lt;!--引入Spring Boot内嵌的Tomcat对JSP的解析包--&gt; &lt;dependency&gt;
+										1、在pom.xml文件中配置依赖项 &lt;!&#45;&#45;引入Spring Boot内嵌的Tomcat对JSP的解析包&#45;&#45;&gt; &lt;dependency&gt;
 
 									</div>
 								</div>
@@ -176,7 +176,7 @@
 							</div>
 							<div class="layui-flow-more">
 								<a href="javascript:;"><cite>加载更多</cite></a>
-							</div>
+							</div>-->
 						</div>
 					</div>
 
@@ -193,9 +193,16 @@
 							</div>
 						</div>
 
-						<div class="article-category shadow categoryOut">
-							<div class="article-category-title">分类导航</div>
-							<a href="javascript:classifyList(1);">Java基础</a>
+						<div class="article-category shadow categoryOut" id="categoryList">
+
+							<script id="categoryListIntf" type="text/html">
+									<div class="article-category-title">分类导航</div>
+									{{#  layui.each(d.categoryList, function(index, item){ }}
+									<a href="javascript:classifyList('{{item.name}}');"  {{#  if(d.categorys.indexOf(item.name) > -1){ }} class="djl_click" {{#  } }} >{{item.name}}</a>
+									{{#  }); }}
+									<div class="clear"></div>
+							</script>
+							<!--<a href="javascript:classifyList(1);">Java基础</a>
 							<a href="javascript:classifyList(2);">web开发</a>
 							<a href="javascript:classifyList(3);">开发工具</a>
 							<a href="javascript:classifyList(4);">心情日记</a>
@@ -205,11 +212,63 @@
 							<a href="javascript:classifyList(8);">Maven</a>
 							<a href="javascript:classifyList(9);">Centos</a>
 							<a href="javascript:classifyList(10);">Tomcat</a>
-							<a href="javascript:classifyList(11);">技术交流</a>
-							<div class="clear"></div>
-						</div>
+							<a href="javascript:classifyList(11);">技术交流</a>-->
 
+						</div>
+						<!-- 文章和排行 -->
 						<div class="layui-tab layui-tab-brief shadow animated fadeInRight" lay-filter="docDemoTabBrief">
+							<ul class="layui-tab-title">
+								<li class="layui-this">点击排行</li>
+								<li>站长推荐</li>
+							</ul>
+							<div class="layui-tab-content">
+								<div class="layui-tab-item layui-show" id="clickRecommendList">
+									<script id="clickRecommendListIntf" type="text/html">
+
+										<ul class="blog-module-ul">
+											{{#  layui.each(d.clickRecommendList, function(index, item){ }}
+											<li>
+											<span>
+												<i class="layui-badge-rim
+												{{#  if(index == 0){ }}
+												layui-bg-red
+												 {{#  } }}
+												 {{#  if(index == 1){ }}
+												layui-bg-orange
+												 {{#  } }}
+												 {{#  if(index == 2){ }}
+												layui-bg-green
+												 {{#  } }}
+												 "
+												>{{index +1}}</i>
+												</span> &nbsp;&nbsp;
+												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+											</li>
+											{{#  }); }}
+										</ul>
+									</script>
+
+								</div>
+
+
+
+
+								<div class="layui-tab-item" id="commentRecommendList">
+									<script id="commentRecommendListIntf" type="text/html">
+
+										<ul class="blog-module-ul">
+											{{#  layui.each(d.commentRecommendList, function(index, item){ }}
+											<li>
+												<span class="article_is_yc">原创</span> &nbsp;&nbsp;
+												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+											</li>
+											{{#  }); }}
+										</ul>
+									</script>
+								</div>
+							</div>
+						</div>
+						<!--<div class="layui-tab layui-tab-brief shadow animated fadeInRight" lay-filter="docDemoTabBrief">
 							<ul class="layui-tab-title">
 								<li class="layui-this">点击排行</li>
 								<li>站长推荐</li>
@@ -324,7 +383,7 @@
 									</ul>
 								</div>
 							</div>
-						</div>
+						</div>-->
 
 						<div class="category-toggle"><i class="fa fa-chevron-left"></i></div>
 					</div>
@@ -334,10 +393,10 @@
 		</div>
 
 		<footer id="f" class="blog-footer">
-			<p><span>Copyright</span><span>©</span><span>2018</span>
-				<a href="http://www.long225.cn">Long博客</a><span>Design By Longwang</span></p>
+			<p><span>Copyright</span><span>©</span><span>2019</span>
+				<a href="http://www.long225.cn">挫挫个人记事本</a><span>Design By DJL</span></p>
 			<p>
-				<a href="http://www.miitbeian.gov.cn" target="_blank">湘ICP备18010289号</a>
+				<a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备18131046号-1</a>
 			</p>
 		</footer>
 

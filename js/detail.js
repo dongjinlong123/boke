@@ -63,8 +63,52 @@
 }];
 
 
-layui.use('flow', function(){
+var getArticleDetail = "https://dongjinlong123.xyz/intf/getArticleDetail";
+var addReadCount = "https://dongjinlong123.xyz/intf/addReadCount";
+var getCommentList  = "https://dongjinlong123.xyz/intf/getComment";
+
+
+layui.use(['jquery','flow','layer','laytpl'], function(){
     var flow = layui.flow;
+
+    var laytpl = layui.laytpl;
+
+
+    var id= getQueryString("id");
+
+    $.get(addReadCount +"?id="+id); //增加阅读记录
+
+    getArticleInfo(id);//加载文章内容
+
+    queryCommentList(id);//得到评论列表
+
+
+
+    //初始化通知消息
+    function getArticleInfo(articleId){
+        var url = getArticleDetail +"?id="+articleId
+        $.ajax({
+            url:url,
+            type:'get',
+            beforeSend:function () {
+                this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
+            },
+            success:function(ret){
+                var data = ret.result;
+                console.log(data);
+                $("#articleTitle").text(data.title)
+                var articleInfoView = $("#articleInfoView");
+                var articleInfo = $("#articleInfo");
+                var getTpl = articleInfo.html();
+                laytpl(getTpl).render(data, function(html){
+                    articleInfoView.html(html);
+                });
+            },
+            complete: function () {
+                layer.close(this.layerIndex);
+            }
+        });
+    }
     //评论显示
     flow.load({
         elem: '#commentList' //流加载容器
@@ -140,4 +184,22 @@ $(document).ready(function() {
 
 function classifyList(id) {
 	layer.msg('功能要自己写哦！');
+}
+//得到文章评论信息
+function queryCommentList(articleId){
+    var url = getCommentList +"?id="+articleId;
+    $.ajax({
+        url:url,
+        type:'get',
+        beforeSend:function () {
+            this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
+        },
+        success:function(ret){
+            var data = ret.result;
+            console.log(data);
+        },
+        complete: function () {
+            layer.close(this.layerIndex);
+        }
+    });
 }

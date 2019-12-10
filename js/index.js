@@ -2,28 +2,19 @@
 //接口
 var getAnnouncement = "./js/intf/getAnnouncement.json";
 /*var getArticleList = "./js/intf/getArticleList.json"*/
-var getArticleList = "http://localhost:8081/intf/getArticleList";
+var getArticleList = "https://dongjinlong123.xyz/intf/getArticleList";
 
 //推荐内容信息
 //var getArticleRecommend = "./js/intf/getArticleRecommend.json";
-var getArticleRecommend = "http://localhost:8081/intf/getArticleRecommend";
+var getArticleRecommend = "https://dongjinlong123.xyz/intf/getArticleRecommend";
 
 //页次
 var pageSize = 8;
 
 var laytpl;
 var layer;
-/**
- * 格式化时间戳
- * @param data
- * @returns {string}
- */
-function fn(data){
-    return new Date(data).toLocaleDateString();
-};
-layui.use(['jquery','carousel','flow','layer','laytpl','flow'], function () {
-    var $ = layui.jquery;
-    var flow = layui.flow;
+
+layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
     layer = layui.layer;
     laytpl = layui.laytpl;
 
@@ -56,7 +47,7 @@ layui.use(['jquery','carousel','flow','layer','laytpl','flow'], function () {
                 layui.each(res.result, function(index, item){
                     var html = '<div class="article shadow animated zoomIn">' +
                         '<div class="article-left ">' +
-                        '<img src="{{item.listPic}}" alt="{{item.title}}">' +
+                        '<img src="'+item.listPic+'" alt="'+item.title+'">' +
                         '</div>' +
                         '<div class="article-right">' +
                         ' <div class="article-title">';
@@ -71,7 +62,7 @@ layui.use(['jquery','carousel','flow','layer','laytpl','flow'], function () {
                         ' <div class="clear"></div><div class="article-footer">' +
                         ' <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + fn(item.createdAt) + '</span>' +
                         ' <span class="article-author"><i class="fa fa-user"></i>&nbsp;&nbsp;' + item.author + '</span>' +
-                        ' <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="javascript:classifyList(10);"> ' + item.category + '</a></span>' +
+                        ' <span><i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="javascript:classifyList('+item.category+');"> ' + item.category + '</a></span>' +
                         ' <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;' + item.readCounts + '</span>' +
                         '  <span class="article-viewinfo"><i class="fa fa-commenting"></i>&nbsp;' + item.commentCounts + '</span>' +
                         '  </div>' +
@@ -205,14 +196,16 @@ function initArticleRecommend(){
             $("#commentList").html(html);
 
             //增加事件
-            $(".recent-list .hotusers-list-item").mouseover(function () {
+            $(".recent-list .hotusers-list-item").mouseenter(function () {
                 var name = $(this).children(".remark-user-avator").attr("data-name");
                 var str = "【"+name+"】的评论";
                 layer.tips(str, this, {
                     tips: [2,'#666666']
                 });
             });
-
+            $(".recent-list .hotusers-list-item").mouseleave(function(){
+                layer.closeAll('tips')
+            });
         },
         complete: function () {
             layer.close(this.layerIndex);
@@ -265,6 +258,6 @@ function playAnnouncement(interval) {
     });
 }
 
-function classifyList(id){
-    	layer.msg('功能要自己写');
+function classifyList(category){
+    	layer.msg('功能要自己写'+category);
 }
