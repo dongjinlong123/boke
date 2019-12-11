@@ -46,3 +46,8 @@ pre {
     border: 1px solid #ccc !important;
     font-size: 13px !important;
 }
+#categoryList .djl_click{
+    border: 1px solid #019688;
+    border-radius: 5px;
+    color: #019688;
+}

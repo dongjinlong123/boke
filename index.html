@@ -25,6 +25,7 @@
 			<div class="blog-container">
 				<a href="javaScript:void(0)" onclick="qqLogin();"  class="blog-user">
 					<i class="fa fa-qq"></i>
+
 				</a>
 
 				<a class="blog-logo" href="index.html">挫挫</a>
@@ -200,7 +201,7 @@
 												 "
 												>{{index +1}}</i>
 												</span> &nbsp;&nbsp;
-												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+												<a href="detail.html?category={{item.category}}&id={{item.id}}">{{item.title}}</a>
 											</li>
 											{{#  }); }}
 										</ul>
@@ -218,7 +219,7 @@
 										{{#  layui.each(d.commentRecommendList, function(index, item){ }}
 										<li>
 											<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-											<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+											<a href="detail.html?category={{item.category}}&id={{item.id}}">{{item.title}}</a>
 										</li>
 										{{#  }); }}
 									</ul>

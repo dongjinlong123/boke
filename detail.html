@@ -19,6 +19,19 @@
     <link href="css/blog.css" rel="stylesheet"/>
     <!-- jquery -->
     <script src="js/jquery.min.js"></script>
+
+   <!-- <link rel="stylesheet" href="js/markdown/css/editormd.css" />-->
+    <link rel="stylesheet" href="js/markdown/css/editormd.preview.css" />
+    <script src="js/markdown/lib/marked.min.js"></script>
+    <script src="js/markdown/lib/prettify.min.js"></script>
+
+    <script src="js/markdown/lib/raphael.min.js"></script>
+    <script src="js/markdown/lib/underscore.min.js"></script>
+    <script src="js/markdown/lib/sequence-diagram.min.js"></script>
+    <script src="js/markdown/lib/flowchart.min.js"></script>
+    <script src="js/markdown/editormd.js"></script>
+
+
 </head>
 
 <body>
@@ -84,8 +97,8 @@
                                     <span>作者：{{d.author}}</span>
                                     <span>浏览量：{{d.readCounts }}</span>
                                 </div>
-                                <div id="articleContent" style="overflow: hidden;" class="article-detail-content">
-                                    <p>在主配置文件中设置：{{marked(d.mdcontent)}}</p>
+                                <div id="articleContent" style="width: 96%;" >
+                                    <textarea style="display:none;">{{d.mdcontent}}</textarea>
                                 </div>
                         </script>
                     </div>
@@ -136,7 +149,20 @@
 
                     <div class="category-toggle "><i class="fa fa-chevron-left "></i></div>
 
-                    <div class="article-category shadow ">
+
+                    <div class="article-category shadow categoryOut" id="categoryList">
+
+                        <script id="categoryListIntf" type="text/html">
+                            <div class="article-category-title" onclick="allCategory()">分类导航</div>
+                            {{#  layui.each(d.categoryList, function(index, item){ }}
+                            <a href="javascript:classifyList('{{item.name}}');"  {{#  if(d.categorys.indexOf(item.name) > -1){ }} class="djl_click" {{#  } }} >{{item.name}}</a>
+                            {{#  }); }}
+                            <div class="clear"></div>
+                        </script>
+
+                    </div>
+
+                   <!-- <div class="article-category shadow ">
                         <div class="article-category-title ">分类导航</div>
                         <a href="javascript:classifyList(1); ">Java基础</a><a
                             href="javascript:classifyList(2); ">web开发</a><a href="javascript:classifyList(3); ">开发工具</a><a
@@ -149,6 +175,10 @@
                             href="javascript:classifyList(11); ">技术交流</a>
                         <div class="clear "></div>
                     </div>
+-->
+
+
+
                     <div class="blog-module shadow ">
                         <div class="blog-module-title ">相似文章</div>
                         <ul class="blog-module-ul ">
@@ -319,7 +349,7 @@
 
 <script src="layui/layui.js "></script>
 <script src="js/global.js "></script>
-<script src="js/marked.js"></script>
+<!--<script src="js/marked.js"></script>-->
 <script src="js/about.js "></script>
 <script src="js/detail.js "></script>
 

@@ -1,4 +1,5 @@
-﻿
+﻿var SERVER_HOST = "http://localhost:8081";
+
 layui.use(['element', 'layer', 'util', 'form'], function () {
     var $ = layui.jquery;
     var layer = layui.layer;
@@ -141,7 +142,7 @@ layui.use(['element', 'layer', 'util', 'form'], function () {
             //浏览器无登录记录，未登录
             $.ajax({
                 type: "GET",
-                url: "https://dongjinlong123.xyz/qq/checkSession",
+                url: SERVER_HOST+"/qq/checkSession",
                 data: null,
                 success: function(res) {
                     console.log(res)
@@ -152,16 +153,31 @@ layui.use(['element', 'layer', 'util', 'form'], function () {
                     }else{
                         console.log("已登录")
                         MyLocalStorage.put("login",true,600);
+                        MyLocalStorage.put("userInfo",res.userInfo,600);
+                        initUserInfo(res.userInfo);
                     }
                 }});
         }else{
             //已登录
             console.log("已登录")
-            MyLocalStorage.put("login",true,600);
+           var userInfo =  MyLocalStorage.get("userInfo")
+            initUserInfo(userInfo);
         }
 
     }
-    
+    function initUserInfo(userInfo){
+        $(".blog-container .blog-user i").hide();
+        $(".blog-container .blog-user img").remove();
+        $(".blog-container .blog-user").append("<img alt ="+userInfo.nickName+" src="+userInfo.userPic+" />");
+        $(".blog-container .blog-user img").mouseenter(function () {
+            layer.tips(userInfo.nickName, this, {
+                tips: [2,'#666666']
+            });
+        })
+        $(".blog-container .blog-user img").mouseleave(function(){
+            layer.closeAll('tips')
+        });
+    }
     /*
     $(".user-out").click(function(){
     	MyLocalStorage.remove("user");
@@ -301,7 +317,8 @@ function qqLogin(){
     //qq登录功能
     var loginFlag = MyLocalStorage.get("login");
     if(loginFlag != true){
-        openWindow("https://dongjinlong123.xyz/qq/qqLogin?callBackUrl="+location.href)
+        //openWindow(SERVER_HOST+"/qq/qqLogin?callBackUrl="+location.href)
+        window.location.href = SERVER_HOST+"/qq/qqLogin?callBackUrl="+location.href;
     }
 }
 /**

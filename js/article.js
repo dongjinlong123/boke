@@ -1,7 +1,7 @@
 
-var getCategoryList = "https://dongjinlong123.xyz/intf/getCategoryList";
-var getArticleList = "https://dongjinlong123.xyz/intf/getArticleList";
-var getArticleRecommend = "https://dongjinlong123.xyz/intf/getArticleRecommend";
+var getCategoryList = SERVER_HOST+"/intf/getCategoryList";
+var getArticleList = SERVER_HOST+"/intf/getArticleList";
+var getArticleRecommend = SERVER_HOST+"/intf/getArticleRecommend";
 
 
 //页次
@@ -88,7 +88,7 @@ function getArticleInfo(url,page,next){
                 html += '<span class="article_is_top">置顶</span>&nbsp;';
             }
             html += '<span class="article_is_yc">原创</span>&nbsp;' +
-                '<a href="detail.html?id='+item.id+'">' + item.title + '</a>' +
+                '<a href="detail.html?category='+ item.category+'&id='+item.id+'">' + item.title + '</a>' +
                 '</div><div class="article-abstract">' +
                 item.excerpt + '</div></div>' +
                 ' <div class="clear"></div><div class="article-footer">' +
@@ -125,10 +125,10 @@ $(function(){
         }
     });
 
-
-
 });
-
+function allCategory(){
+    window.location.href='./article.html'
+}
 
 
 //初始化类别信息

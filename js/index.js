@@ -2,11 +2,11 @@
 //接口
 var getAnnouncement = "./js/intf/getAnnouncement.json";
 /*var getArticleList = "./js/intf/getArticleList.json"*/
-var getArticleList = "https://dongjinlong123.xyz/intf/getArticleList";
+var getArticleList = SERVER_HOST+"/intf/getArticleList";
 
 //推荐内容信息
 //var getArticleRecommend = "./js/intf/getArticleRecommend.json";
-var getArticleRecommend = "https://dongjinlong123.xyz/intf/getArticleRecommend";
+var getArticleRecommend = SERVER_HOST+"/intf/getArticleRecommend";
 
 //页次
 var pageSize = 8;
@@ -56,7 +56,7 @@ layui.use(['jquery','carousel','flow','layer','laytpl'], function () {
                         html += '<span class="article_is_top">置顶</span>&nbsp;';
                     }
                     html += '<span class="article_is_yc">原创</span>&nbsp;' +
-                        '<a href="detail.html?id='+item.id+'">' + item.title + '</a>' +
+                        '<a href="detail.html?category='+ item.category+'&id='+item.id+'">' + item.title + '</a>' +
                         '</div><div class="article-abstract">' +
                         item.excerpt + '</div></div>' +
                         ' <div class="clear"></div><div class="article-footer">' +

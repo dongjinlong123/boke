@@ -196,7 +196,7 @@
 						<div class="article-category shadow categoryOut" id="categoryList">
 
 							<script id="categoryListIntf" type="text/html">
-									<div class="article-category-title">分类导航</div>
+									<div class="article-category-title" onclick="allCategory()">分类导航</div>
 									{{#  layui.each(d.categoryList, function(index, item){ }}
 									<a href="javascript:classifyList('{{item.name}}');"  {{#  if(d.categorys.indexOf(item.name) > -1){ }} class="djl_click" {{#  } }} >{{item.name}}</a>
 									{{#  }); }}
@@ -242,7 +242,7 @@
 												 "
 												>{{index +1}}</i>
 												</span> &nbsp;&nbsp;
-												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+												<a href="detail.html?category={{item.category}}&id={{item.id}}">{{item.title}}</a>
 											</li>
 											{{#  }); }}
 										</ul>
@@ -260,7 +260,7 @@
 											{{#  layui.each(d.commentRecommendList, function(index, item){ }}
 											<li>
 												<span class="article_is_yc">原创</span> &nbsp;&nbsp;
-												<a href="detail.html?id={{item.id}}">{{item.title}}</a>
+												<a href="detail.html?category={{item.category}}&id={{item.id}}">{{item.title}}</a>
 											</li>
 											{{#  }); }}
 										</ul>
