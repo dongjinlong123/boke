@@ -1,5 +1,5 @@
 ﻿var SERVER_HOST = "http://localhost:8081";
-
+//var SERVER_HOST = "https://dongjinlong123.xyz";
 layui.use(['element', 'layer', 'util', 'form'], function () {
     var $ = layui.jquery;
     var layer = layui.layer;
@@ -267,26 +267,6 @@ function getQueryString(searchKey){
     return undefined
 }
 
-//调用QC.Login方法，指定btnId参数将按钮绑定在容器节点中
-QC.Login({
-        //btnId：插入按钮的节点id，必选
-        btnId:"myQqLoginBtn"
-    },cbLoginFun //登录成功后回调
-);
-
-var cbLoginFun = function(oInfo, oOpts){
-    alert(oInfo.nickname); // 昵称
-    MyLocalStorage.put("login",true,600);
-    var userInfo={
-        nickname:oInfo.nickname,
-        userPic:oInfo.figureurl
-    }
-    MyLocalStorage.put("userInfo",userInfo,600);
-    //alert(oOpts.btnId);    // 点击登录的按钮Id
-
-    //父窗口重新刷新一下
-    parent.window.location.reload()
-};
 $(function(){
     //isUser();
     checkLoginFlag()
@@ -297,12 +277,34 @@ function checkLoginFlag(){
     var loginFlag = MyLocalStorage.get("login");
     if(loginFlag != true){
         //浏览器无登录记录，未登录
+        console.log("浏览器无登录记录，未登录");
+        var code = getQueryString("code");
+        if(code){
+            //存在code，根据code 查询出用户信息
+            $.ajax({
+                type: "GET",
+                url: SERVER_HOST+"/qq/getQQUserInfo",
+                data: {"code":code},
+                success: function(res) {
+                    console.log(res)
+                    if(res.flag == false){
+                        //尚未登录
+                        console.log("尚未登录")
+                        MyLocalStorage.put("login",false,600);
+                    }else{
+                        console.log("已登录")
+                        MyLocalStorage.put("login",true,600);
+                        MyLocalStorage.put("userInfo",res.data,600);
+                        initUserInfo(res.data);
+                    }
+                }});
+        }
     }else{
         //已登录
+        console.log("已登录");
         var userInfo =  MyLocalStorage.get("userInfo")
         initUserInfo(userInfo);
     }
-
 }
 function initUserInfo(userInfo){
     $(".blog-container .blog-user i").hide();
@@ -319,8 +321,11 @@ function initUserInfo(userInfo){
 }
 
 function qqLogin(){
-
-
+    var loginFlag = MyLocalStorage.get("login");
+    if(loginFlag != true){
+        //未登录
+        window.location.href =SERVER_HOST+"/qq/qqLogin";
+    }
 }
 /**
  * 封装一个居中打开新窗口的方法
@@ -331,5 +336,6 @@ function openWindow(url, width, height)
     height = height || 400;
     var left = (window.screen.width - width) / 2;
     var top = (window.screen.height - height) / 2;
-    window.open(url, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, left="+left+", top="+top+", width="+width+", height="+height);
+    var myWindow= window.open(url, "_blank", "toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, left="+left+", top="+top+", width="+width+", height="+height);
+    return myWindow;
 }
