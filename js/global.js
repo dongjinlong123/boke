@@ -130,54 +130,7 @@ layui.use(['element', 'layer', 'util', 'form'], function () {
         $('.article-category').addClass('categoryOut');
     }
     
-    $(function(){
-    	//isUser();
-        checkSession()
-    });
 
-
-    function checkSession(){
-        var loginFlag = MyLocalStorage.get("login");
-        if(loginFlag != true){
-            //浏览器无登录记录，未登录
-            $.ajax({
-                type: "GET",
-                url: SERVER_HOST+"/qq/checkSession",
-                data: null,
-                success: function(res) {
-                    console.log(res)
-                    if(res.login == false){
-                        //尚未登录
-                        console.log("尚未登录")
-                        MyLocalStorage.put("login",false,600);
-                    }else{
-                        console.log("已登录")
-                        MyLocalStorage.put("login",true,600);
-                        MyLocalStorage.put("userInfo",res.userInfo,600);
-                        initUserInfo(res.userInfo);
-                    }
-                }});
-        }else{
-            //已登录
-            console.log("已登录")
-           var userInfo =  MyLocalStorage.get("userInfo")
-            initUserInfo(userInfo);
-        }
-
-    }
-    function initUserInfo(userInfo){
-        $(".blog-container .blog-user i").hide();
-        $(".blog-container .blog-user img").remove();
-        $(".blog-container .blog-user").append("<img alt ="+userInfo.nickName+" src="+userInfo.userPic+" />");
-        $(".blog-container .blog-user img").mouseenter(function () {
-            layer.tips(userInfo.nickName, this, {
-                tips: [2,'#666666']
-            });
-        })
-        $(".blog-container .blog-user img").mouseleave(function(){
-            layer.closeAll('tips')
-        });
-    }
     /*
     $(".user-out").click(function(){
     	MyLocalStorage.remove("user");
@@ -220,7 +173,7 @@ window._bd_share_config = {
     },
     "share": {}
 };
-with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'https://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
 
 
 //定时 缓存  
@@ -313,13 +266,61 @@ function getQueryString(searchKey){
     }
     return undefined
 }
-function qqLogin(){
-    //qq登录功能
+
+//调用QC.Login方法，指定btnId参数将按钮绑定在容器节点中
+QC.Login({
+        //btnId：插入按钮的节点id，必选
+        btnId:"myQqLoginBtn"
+    },cbLoginFun //登录成功后回调
+);
+
+var cbLoginFun = function(oInfo, oOpts){
+    alert(oInfo.nickname); // 昵称
+    MyLocalStorage.put("login",true,600);
+    var userInfo={
+        nickname:oInfo.nickname,
+        userPic:oInfo.figureurl
+    }
+    MyLocalStorage.put("userInfo",userInfo,600);
+    //alert(oOpts.btnId);    // 点击登录的按钮Id
+
+    //父窗口重新刷新一下
+    parent.window.location.reload()
+};
+$(function(){
+    //isUser();
+    checkLoginFlag()
+});
+
+
+function checkLoginFlag(){
     var loginFlag = MyLocalStorage.get("login");
     if(loginFlag != true){
-        //openWindow(SERVER_HOST+"/qq/qqLogin?callBackUrl="+location.href)
-        window.location.href = SERVER_HOST+"/qq/qqLogin?callBackUrl="+location.href;
+        //浏览器无登录记录，未登录
+    }else{
+        //已登录
+        var userInfo =  MyLocalStorage.get("userInfo")
+        initUserInfo(userInfo);
     }
+
+}
+function initUserInfo(userInfo){
+    $(".blog-container .blog-user i").hide();
+    $(".blog-container .blog-user img").remove();
+    $(".blog-container .blog-user").append("<img alt ="+userInfo.nickName+" src="+userInfo.userPic+" />");
+    $(".blog-container .blog-user img").mouseenter(function () {
+        layer.tips(userInfo.nickName, this, {
+            tips: [2,'#666666']
+        });
+    })
+    $(".blog-container .blog-user img").mouseleave(function(){
+        layer.closeAll('tips')
+    });
+}
+
+function qqLogin(){
+
+
 }
 /**
  * 封装一个居中打开新窗口的方法
