@@ -221,7 +221,11 @@ layui.use(['jquery', 'form', 'layedit', 'flow'], function() {
 					if(res.comment.user.userId == '1') {
 						html += " <span class=\"is_bloger\">博主</span>&nbsp;";
 					}
-					html += '</div><div class="content">' + data.field.content + '</div><p class="info info-footer"><span class="time">' + res.comment.commentDate + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + res.comment.site + '</span>&nbsp;&nbsp;<a class="btn-reply"href="javascript:;" style="color: #009688;font-size:14px;" onclick="btnReplyClick(this)">回复</a></p></div><hr /><!--回复表单默认隐藏--><div class="replycontainer layui-hide"><form class="layui-form"action="">            <input type="hidden" id="comment" name="comment" value="' + res.comment.commentId + '" />       <input type="hidden" id="user" lay-verify="userId" name="user" value="' + res.comment.user.userId + '" />                    <div class="layui-form-item"><textarea name="content"lay-verify="replyContent"placeholder="回复@' + res.comment.user.nickname + '"class="layui-textarea"style="min-height:80px;"></textarea></div><div class="layui-form-item"><button class="layui-btn layui-btn-mini"lay-submit="formReply"lay-filter="formReply">提交</button></div></form></div></li>';
+					html += '</div><div class="content">' + data.field.content + '</div><p class="info info-footer"><span class="time">' + res.comment.commentDate + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + res.comment.site +
+                        '</span>&nbsp;&nbsp;<a class="btn-reply"href="javascript:;" style="color: #009688;font-size:14px;" onclick="btnReplyClick(this)">回复</a></p></div><hr /><!--回复表单默认隐藏--><div class="replycontainer layui-hide">' +
+                        '<form class="layui-form"action="">            <input type="hidden" id="comment" name="comment" value="' + res.comment.commentId + '" />       <input type="hidden" id="user" lay-verify="userId" name="user" value="' + res.comment.user.userId + '" /> ' +
+                        '<div class="layui-form-item"><textarea name="content"lay-verify="replyContent"placeholder="回复@' + res.comment.user.nickname + '"class="layui-textarea"style="min-height:80px;"></textarea></div>' +
+                        '<div class="layui-form-item"><button class="layui-btn layui-btn-mini"lay-submit="formReply"lay-filter="formReply">提交</button></div></form></div></li>';
 					$('.blog-comment').prepend(html);
 					$('#remarkEditor').val('');
 					editIndex = layui.layedit.build('remarkEditor', {

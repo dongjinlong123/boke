@@ -1,72 +1,43 @@
 ﻿var data = [{
-	"commentId": 11,
-	"article": null,
-	"user": {
-		"userId": 11,
-		"nickname": "清风",
-		"headPortrait": "http://qzapp.qlogo.cn/qzapp/101477629/B4901BFB60F8DEE83F01692F2544E612/100",
-		"sex": "男",
-		"registrationDate": "2018-08-01 15:19:26",
-		"latelyLoginTime": "2018-08-01 15:19:26",
-		"commentNum": 1
-	},
-	"content": "<p>网站开源吗</p><p><br></p>",
-	"commentDate": "2018-08-01 15:19:41",
-	"site": "河北省保定市  铁通",
-	"reply":[{
-			"replyId": 2,
-			"comment": {
-				"commentId": 11,
-				"article": null,
-				"user": {
-					"userId": 11,
-					"nickname": "清风",
-					"headPortrait": "http://qzapp.qlogo.cn/qzapp/101477629/B4901BFB60F8DEE83F01692F2544E612/100",
-					"sex": "男",
-					"registrationDate": "2018-08-01 15:19:26",
-					"latelyLoginTime": "2018-08-01 15:19:26",
-					"commentNum": 1
-				},
-				"content": "<p>网站开源吗</p><p><br></p>",
-				"commentDate": "2018-08-01 15:19:41",
-				"site": "河北省保定市  铁通"
-			},
-			"user": {
-				"userId": 1,
-				"nickname": "Single",
-				"headPortrait": "http://qzapp.qlogo.cn/qzapp/101477629/2F1EDDE252859E5FF645F959893C6863/100",
-				"sex": "男",
-				"registrationDate": "2018-07-26 21:24:49",
-				"latelyLoginTime": "2018-08-09 10:25:36",
-				"commentNum": 1
-			},
-			"content": "最近有点忙，后期会开源到GitHub上的。",
-			"replyDate": "2018-08-01 22:10:28",
-			"site": "湖南省湘潭市  移动"
-		}]
-},  {
-	"commentId": 2,
-	"article": null,
-	"user": {
-		"userId": 2,
-		"nickname": "Mr.Long",
-		"headPortrait": "http://qzapp.qlogo.cn/qzapp/101477629/B5D5212D0429E4491D932EEEF814FE99/100",
-		"sex": "男",
-		"registrationDate": "2018-07-26 21:30:24",
-		"latelyLoginTime": "2018-08-01 22:16:42",
-		"commentNum": 4
-	},
-	"content": "试试<br>",
-	"commentDate": "2018-07-26 21:30:52",
-	"site": "湖南省湘潭市  移动",
-	"reply":[]
-}];
+    "formId": "04bd8c88defc4d048ad7f8defe94f76b",
+    "createdAt": 1576660362000,
+    "replyer": {
+        "userPic": "https://wx.qlogo.cn/mmopen/vi_32/KdVWJMzQLuqcHSfbK8ibfEUTWq3ITiaMFl4xYh1Xe1k4lRBqOMT1SAfEIAhnENJA3Gcia3xtbSM9nT1wZmC75bDsw/132",
+        "nickName": "吵吵",
+        "replyerId": 55
+    },
+    "content": "哟哟哟"
+}, {
+    "formId": "239db66f6ab441bba00b6c28bca72fe5",
+    "createdAt": 1576660382000,
+    "replyer": {
+        "userPic": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoGk4cLm2UXIvm5sb2ezOFEjkj0EYh5SNkINfTzoITg0xo8oYk95xFuXc75O2J2iaZiaCUcsmcLopiaw/132",
+        "nickName": "董小飒",
+        "replyerId": 54
+    },
+    "user": {
+        "userPic": "https://wx.qlogo.cn/mmopen/vi_32/KdVWJMzQLuqcHSfbK8ibfEUTWq3ITiaMFl4xYh1Xe1k4lRBqOMT1SAfEIAhnENJA3Gcia3xtbSM9nT1wZmC75bDsw/132",
+        "nickName": "吵吵",
+        "userId": 55
+    },
+    "content": "神马"
+}, {
+    "formId": "b2abcfb26b9a48639df5a7b643b7919a",
+    "createdAt": 1576716542000,
+    "replyer": {
+        "userPic": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoGk4cLm2UXIvm5sb2ezOFEjkj0EYh5SNkINfTzoITg0xo8oYk95xFuXc75O2J2iaZiaCUcsmcLopiaw/132",
+        "nickName": "董小飒",
+        "replyerId": 54
+    },
+    "content": "渣渣"
+}]
 
 
 var getArticleDetail = SERVER_HOST+"/intf/getArticleDetail";
 var addReadCount = SERVER_HOST+"/intf/addReadCount";
 var getCommentList  = SERVER_HOST+"/intf/getComment";
 var getCategoryList = SERVER_HOST+"/intf/getCategoryList";
+var getArticleRecommend = SERVER_HOST+"/intf/getArticleRecommend";
 
 var laytpl;
 var layer;
@@ -86,7 +57,7 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
     getArticleInfo(id);//加载文章内容
 
     queryCommentList(id);//得到评论列表
-
+    initArticleRecommend();//得到推荐列表
 
 
     //初始化通知消息
@@ -121,6 +92,42 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
             }
         });
     }
+
+    //初始化推荐信息
+    function initArticleRecommend(){
+        var url = getArticleRecommend;
+        $.ajax({
+            url:url,
+            type:'get',
+            beforeSend:function () {
+                this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
+            },
+            success:function(data){
+                console.log(data)
+                var clickRecommendList = {"clickRecommendList":data.clickRecommendList};
+                var commentRecommendList = {"commentRecommendList":data.commentRecommendList};
+
+                var c1 = $("#clickRecommendList");
+                var c1_Intf = $("#clickRecommendListIntf");
+                var getTpl_1 = c1_Intf.html();
+                laytpl(getTpl_1).render(clickRecommendList, function(html){
+                    c1.html(html);
+                });
+                var c2 = $("#commentRecommendList");
+                var c2_Intf = $("#commentRecommendListIntf");
+                var getTpl_2 = c2_Intf.html();
+                laytpl(getTpl_2).render(commentRecommendList, function(html){
+                    c2.html(html);
+                });
+
+            },
+            complete: function () {
+                layer.close(this.layerIndex);
+            }
+        });
+    }
+
+
     //评论显示
     flow.load({
         elem: '#commentList' //流加载容器
@@ -129,48 +136,62 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
                     var lis = [];
                     for(var i = 0; i < data.length; i++){
                         var str="";
-                        var datas = {
-                            comment:data[i].commentId
-                        };
-                        for(var r = 0; r < data[i].reply.length; r++){
+                        if(data[i].user){
                             str+="<div class=\"comment-child\">\n" +
-                                "      <img src=\""+data[i].reply[r].user.headPortrait+"\" alt=\""+data[i].reply[r].user.nickname+"\" />\n" +
+                                "      <img src=\""+data[i].user.userPic+"\" alt=\""+data[i].user.nickName+"\" />\n" +
                                 "      <div class=\"info\">\n" +
-                                "          <span class=\"username\">	"+data[i].reply[r].user.nickname+" : </span>";
-                            if(data[i].reply[r].user.userId=='1'){
-                                str+="<span class=\"is_bloger\">博主</span>&nbsp;";
-                            }
-                            str+="回复 <span class=\"username\">@"+data[i].user.nickname+" </span>";
-                            if(data[i].user.userId=='1'){
-                                str+="<span class=\"is_bloger\">博主</span>&nbsp;";
-                            }
-                            str+= "：<span>"+data[i].reply[r].content+"</span>\n" +
-                                "      </div>\n" +
-                                "      <p class=\"info\"><span class=\"time\">"+data[i].reply[r].replyDate+"</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>"+data[i].reply[r].site+"</span></p>\n" +
-                                "  </div>\n";
+                                "          <span class=\"username\">	"+data[i].user.nickName+" : </span>";
+
+                            /*if(data[i].replyer[r].userId=='1'){
+                             str+="<span class=\"is_bloger\">博主</span>&nbsp;";
+                             }*/
+
+                            str+="回复 <span class=\"username\">@"+data[i].replyer.nickName+" </span>";
+                            /* if(data[i].user.userId=='1'){
+                             str+="<span class=\"is_bloger\">博主</span>&nbsp;";
+                             }*/
+                            str+= "：<span>"+data[i].content+"</span>\n" +
+                                "  </div>\n" +
+                                "      <p class=\"info\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
+                                "  </div>\n" +
+                "               <!-- 回复表单默认隐藏 -->\n" +
+                "               <div class=\"replycontainer layui-hide\">\n" +
+                "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
+                "                   <input type=\"hidden\" id=\"comment\" name=\"comment\" value=\""+data[i].formId+"\" />\n" +
+                "                   <input type=\"hidden\" id=\"user\" lay-verify=\"userId\" name=\"user\" value=\""+$('#user').val()+"\" />\n" +
+                "                       <div class=\"layui-form-item\">\n" +
+                "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].user.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
+                "                       </div>\n" +
+                "                       <div class=\"layui-form-item\">\n" +
+                "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
+                "                       </div>\n" +
+                "                   </form>\n" +
+                "               </div>";
+
                         }
+
                         lis.push( "<li>\n" +
                             "               <div class=\"comment-parent\">\n" +
-                            "                   <img src=\""+data[i].user.headPortrait+"\" alt=\""+data[i].user.nickname+"\" />\n" +
+                            "                   <img src=\""+data[i].replyer.userPic+"\" alt=\""+data[i].replyer.nickName+"\" />\n" +
                             "                   <div class=\"info\">\n" +
-                            "                       <span class=\"username\">"+data[i].user.nickname+"</span>\n");
-                        if(data[i].user.userId=='1'){
+                            "                       <span class=\"username\">"+data[i].replyer.nickName+"</span>\n");
+                        /*if(data[i].user.userId=='1'){
                             lis.push("<span class=\"is_bloger\">博主</span>&nbsp;");
-                        }
+                        }*/
                         lis.push("                   </div>\n" +
                             "                   <div class=\"content\">\n" +
                             "                       "+data[i].content+"\n" +
                             "                   </div>\n" +
-                            "                   <p class=\"info info-footer\"><span class=\"time\">"+data[i].commentDate+"</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"time\">"+data[i].site+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
+                            "                   <p class=\"info info-footer\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
                             "               </div>\n" +
                             "               <hr />\n" + str +
                             "               <!-- 回复表单默认隐藏 -->\n" +
                             "               <div class=\"replycontainer layui-hide\">\n" +
                             "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
-                            "                   <input type=\"hidden\" id=\"comment\" name=\"comment\" value=\""+data[i].commentId+"\" />\n" +
+                            "                   <input type=\"hidden\" id=\"comment\" name=\"comment\" value=\""+data[i].formId+"\" />\n" +
                             "                   <input type=\"hidden\" id=\"user\" lay-verify=\"userId\" name=\"user\" value=\""+$('#user').val()+"\" />\n" +
                             "                       <div class=\"layui-form-item\">\n" +
-                            "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].user.nickname+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
+                            "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].replyer.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
                             "                       </div>\n" +
                             "                       <div class=\"layui-form-item\">\n" +
                             "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
@@ -191,6 +212,14 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
 
 $(document).ready(function() {
     $(".fa-file-text").parent().parent().addClass("layui-this");
+    //页面初始化得到时候进行赋值
+    var userInfo =  MyLocalStorage.get("userInfo")
+
+    if(userInfo){
+        $("#user").val(userInfo.id);
+    }
+
+    $("#article").val(getQueryString("id"));
 });
 
 
