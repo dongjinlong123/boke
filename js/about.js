@@ -128,7 +128,7 @@ layui.use(['jquery', 'form', 'layedit', 'flow'], function() {
 			if(value == "") return "至少得有一个字吧";
 			layedit.sync(editIndex);
 		},
-		userId: function(value) {
+		replyerId: function(value) {
 			if(value == "" || value == null) return "至少你得先登录吧！";
 		},
 		replyContent: function(value) {
@@ -174,7 +174,7 @@ layui.use(['jquery', 'form', 'layedit', 'flow'], function() {
 						if(data[i].user.userId == '1') {
 							lis.push("<span class=\"is_bloger\">博主</span>&nbsp;");
 						}
-						lis.push("                   </div>\n" +
+						lis.push("			</div>\n" +
 							"                   <div class=\"content\">\n" +
 							"                       " + data[i].content + "\n" +
 							"                   </div>\n" +
@@ -204,28 +204,53 @@ layui.use(['jquery', 'form', 'layedit', 'flow'], function() {
 		}
 	});
 
+	var saveComment = SERVER_HOST+"/intf/saveComment";
+
 	//监听留言提交
 	form.on('submit(formLeaveMessage)', function(data) {
 		var index = layer.load(1);
 		//模拟留言回复
-		var url = '/comment/add';
+		addComment(data.field,index);
+		return false;
+	});
+	function addComment(param,index){
+		//判断是否是回复用户的评论
+		var flag = false;
+		if(param.userId){
+			flag = true;
+		}
+
 		$.ajax({
 			type: "POST",
-			url: url,
-			data: data.field,
+			url: saveComment,
+			dataType: 'json',
+			contentType:'application/json;charset=UTF-8',
+			data: JSON.stringify(param),
 			success: function(res) {
-				if(res.success) {
-					layer.close(index);
-					var content = data.field.content;
-					var html = '<li><div class="comment-parent"><img src="' + res.comment.user.headPortrait + '" alt="' + res.comment.user.nickname + '"/><div class="info"><span class="username">' + res.comment.user.nickname + '</span>';
-					if(res.comment.user.userId == '1') {
+				if(res.result) {
+
+					var html = '<li><div class="comment-parent"><img src="' + res.user.userPic + '" alt="' + res.user.nickName + '"/>' +
+						'<div class="info"><span class="username">' + res.user.nickName + '</span>';
+					if(flag){
+						html +="回复 <span class=\"username\">@"+param.userName+" </span>\n"
+					}
+					if(res.user.userId == '1') {
 						html += " <span class=\"is_bloger\">博主</span>&nbsp;";
 					}
-					html += '</div><div class="content">' + data.field.content + '</div><p class="info info-footer"><span class="time">' + res.comment.commentDate + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + res.comment.site +
-                        '</span>&nbsp;&nbsp;<a class="btn-reply"href="javascript:;" style="color: #009688;font-size:14px;" onclick="btnReplyClick(this)">回复</a></p></div><hr /><!--回复表单默认隐藏--><div class="replycontainer layui-hide">' +
-                        '<form class="layui-form"action="">            <input type="hidden" id="comment" name="comment" value="' + res.comment.commentId + '" />       <input type="hidden" id="user" lay-verify="userId" name="user" value="' + res.comment.user.userId + '" /> ' +
-                        '<div class="layui-form-item"><textarea name="content"lay-verify="replyContent"placeholder="回复@' + res.comment.user.nickname + '"class="layui-textarea"style="min-height:80px;"></textarea></div>' +
-                        '<div class="layui-form-item"><button class="layui-btn layui-btn-mini"lay-submit="formReply"lay-filter="formReply">提交</button></div></form></div></li>';
+					html += '</div><div class="content">' + res.articleComment.content + '</div>' +
+						'<p class="info info-footer">' +
+						'<span class="time">' + fn(res.articleComment.createdAt) +
+						'</span>&nbsp;&nbsp;<a class="btn-reply"href="javascript:;" style="color: #009688;font-size:14px;" onclick="btnReplyClick(this)">回复</a>' +
+						'</p></div><hr />' +
+						'<!--回复表单默认隐藏-->' +
+						'<div class="replycontainer layui-hide">' +
+						'<form class="layui-form" action="">' +
+						'<input type="hidden" id="articleId" name="articleId" value="' + res.articleComment.id + '" />' +
+						'<input type="hidden" id="userId" name="userId" value="' + loginUserId + '" />' +
+						'<input type="hidden" id="userName" name="userName" value="' + res.user.nickName + '" />' +
+						'<input type="hidden" id="replyerId" lay-verify="replyerId" name="replyerId" value="' + loginUserId + '" /> ' +
+						'<div class="layui-form-item"><textarea name="content"lay-verify="replyContent"placeholder="回复@' + res.user.nickName + '"class="layui-textarea"style="min-height:80px;"></textarea></div>' +
+						'<div class="layui-form-item"><button class="layui-btn layui-btn-mini"lay-submit="formReply"lay-filter="formReply">提交</button></div></form></div></li>';
 					$('.blog-comment').prepend(html);
 					$('#remarkEditor').val('');
 					editIndex = layui.layedit.build('remarkEditor', {
@@ -238,48 +263,52 @@ layui.use(['jquery', 'form', 'layedit', 'flow'], function() {
 				} else {
 					layer.msg("评论失败！");
 				}
+				layer.close(index);
 			},
 			error: function(data) {
 				layer.msg("网络错误！");
+				layer.close(index);
 			}
 		});
-		return false;
-	});
-
+		window.scrollTo(0, $(".blog-module-title")[0].offsetTop )
+	}
 	//监听留言回复提交
 	form.on('submit(formReply)', function(data) {
 		var index = layer.load(1);
 		//模拟留言回复
-		var url = '/reply/add';
-		$.ajax({
-			type: "POST",
-			url: url,
-			data: data.field,
-			success: function(res) {
-				if(res.success) {
-					layer.close(index);
-					var html = '<div class="comment-child"><img src="' + res.reply.user.headPortrait + '" alt="' + res.reply.user.nickname + '"/><div class="info"><span class="username">' + res.reply.user.nickname + ' : </span>';
-					if(res.reply.user.userId == '1') {
-						html += " <span class=\"is_bloger\">博主</span>&nbsp;";
-					}
-					html += "回复 <span class=\"username\">@" + res.reply.comment.user.nickname + " </span>";
-					if(res.reply.comment.user.userId == '1') {
-						html += " <span class=\"is_bloger\">博主</span>&nbsp;";
-					}
-					html += '：<span>' + data.field.content + '</span></div><p class="info"><span class="time">' + res.reply.replyDate + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + res.reply.site + '</span></p></div>';
-					$(data.form).find('textarea').val('');
-					$(data.form).parent('.replycontainer').before(html).siblings('.comment-parent').children('p').children('a').click();
-					layer.msg("回复成功", {
-						icon: 1
-					});
-				} else {
-					layer.msg("回复失败！");
-				}
-			},
-			error: function(data) {
-				layer.msg("网络错误！");
-			}
-		});
+		addComment(data.field,index);
+		$(this).parent().parent().parent(".replycontainer").toggleClass('layui-hide');
+		//模拟留言回复
+		// var url = '/reply/add';
+		// $.ajax({
+		// 	type: "POST",
+		// 	url: url,
+		// 	data: data.field,
+		// 	success: function(res) {
+		// 		if(res.success) {
+		// 			layer.close(index);
+		// 			var html = '<div class="comment-child"><img src="' + res.reply.user.headPortrait + '" alt="' + res.reply.user.nickname + '"/><div class="info"><span class="username">' + res.reply.user.nickname + ' : </span>';
+		// 			if(res.reply.user.userId == '1') {
+		// 				html += " <span class=\"is_bloger\">博主</span>&nbsp;";
+		// 			}
+		// 			html += "回复 <span class=\"username\">@" + res.reply.comment.user.nickname + " </span>";
+		// 			if(res.reply.comment.user.userId == '1') {
+		// 				html += " <span class=\"is_bloger\">博主</span>&nbsp;";
+		// 			}
+		// 			html += '：<span>' + data.field.content + '</span></div><p class="info"><span class="time">' + res.reply.replyDate + '</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>' + res.reply.site + '</span></p></div>';
+		// 			$(data.form).find('textarea').val('');
+		// 			$(data.form).parent('.replycontainer').before(html).siblings('.comment-parent').children('p').children('a').click();
+		// 			layer.msg("回复成功", {
+		// 				icon: 1
+		// 			});
+		// 		} else {
+		// 			layer.msg("回复失败！");
+		// 		}
+		// 	},
+		// 	error: function(data) {
+		// 		layer.msg("网络错误！");
+		// 	}
+		// });
 		return false;
 	});
 });

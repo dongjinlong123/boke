@@ -105,15 +105,15 @@
                             <legend>来说两句吧</legend>
                             <div class="layui-field-box">
                                 <form class="layui-form blog-editor" action="">
-                                    <input type="hidden" id="user" name="user" lay-verify="userId" value="">
-                                    <input type="hidden" id="article" name="article" value="">
+                                    <input type="hidden" id="replyerId" name="replyerId" lay-verify="replyerId" value="">
+                                    <input type="hidden" id="articleId" name="articleId" value="">
                                     <div class="layui-form-item">
                                         <textarea name="content" lay-verify="content" id="remarkEditor"
                                                   placeholder="请输入内容" class="layui-textarea layui-hide"></textarea>
                                         <div class="layui-layedit">
                                             <div class="layui-unselect layui-layedit-tool"><i
                                                     class="layui-icon layedit-tool-face" title="表情" layedit-event="face"
-                                                "=" "></i><span class="layedit-tool-mid "></span><i
+                                               ></i><span class="layedit-tool-mid "></span><i
                                                         class="layui-icon layedit-tool-left " title="左对齐 "
                                                         lay-command="justifyLeft " layedit-event="left"></i><i
                                                         class="layui-icon layedit-tool-center" title="居中对齐"
@@ -131,13 +131,13 @@
                                         </div>
                                     </div>
                                     <div class="layui-form-item ">
-                                        <button class="layui-btn " lay-submit="formLeaveMessage "
-                                                lay-filter="formLeaveMessage ">提交评论
+                                        <button class="layui-btn " lay-submit  lay-filter="formLeaveMessage">提交评论
                                         </button>
                                     </div>
                                 </form>
                             </div>
                         </fieldset>
+
                         <div class="blog-module-title ">最新评论</div>
                         <ul class="blog-comment " id="commentList"></ul>
                     </div>
@@ -258,7 +258,6 @@
         </div>
     </div>
 </div>
-
 <div class="blog-mask animated layui-hide "></div>
 
 <script src="layui/layui.js "></script>

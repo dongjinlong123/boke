@@ -55,8 +55,6 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
 
     initCategoryList();//初始化文章类别
     getArticleInfo(id);//加载文章内容
-
-    queryCommentList(id);//得到评论列表
     initArticleRecommend();//得到推荐列表
 
 
@@ -71,7 +69,6 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
             },
             success:function(ret){
                 var data = ret.result;
-                console.log(data);
                 $("#articleTitle").text(data.title)
                 var articleInfoView = $("#articleInfoView");
                 var articleInfo = $("#articleInfo");
@@ -132,79 +129,92 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
     flow.load({
         elem: '#commentList' //流加载容器
         ,done: function(page, next){ //执行下一页的回调
-            setTimeout(function(){
-                    var lis = [];
-                    for(var i = 0; i < data.length; i++){
-                        var str="";
-                        if(data[i].user){
-                            str+="<div class=\"comment-child\">\n" +
-                                "      <img src=\""+data[i].user.userPic+"\" alt=\""+data[i].user.nickName+"\" />\n" +
-                                "      <div class=\"info\">\n" +
-                                "          <span class=\"username\">	"+data[i].user.nickName+" : </span>";
+            var url = getCommentList +"?id="+id;
+            var lis = [];
+            $.get( url, function(res){
+               var data = res.result;
 
-                            /*if(data[i].replyer[r].userId=='1'){
-                             str+="<span class=\"is_bloger\">博主</span>&nbsp;";
-                             }*/
+                for(var i = 0; i < data.length; i++){
+                    var str="";
+                    //存在回复者的
+                    if(data[i].user){
+                        // str+="<div class=\"comment-child\">\n" +
+                        //     "      <img src=\""+data[i].user.userPic+"\" alt=\""+data[i].user.nickName+"\" />\n" +
+                        //     "      <div class=\"info\">\n" +
+                        //     "          <span class=\"username\">	"+data[i].user.nickName+" : </span>";
+                        //
+                        // if(data[i].user.userId=='1'){
+                        //  str+="<span class=\"is_bloger\">博主</span>&nbsp;";
+                        //  }
+                        //
+                        // str+="回复 <span class=\"username\">@"+data[i].replyer.nickName+" </span>";
+                        /* if(data[i].user.userId=='1'){
+                         str+="<span class=\"is_bloger\">博主</span>&nbsp;";
+                         }*/
+            //             str+= "：<span>"+data[i].content+"</span>\n" +
+            //                 "  </div>\n" +
+            //                 "      <p class=\"info\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
+            //                 "  </div>\n" +
+            // "               <!-- 回复表单默认隐藏 -->\n" +
+            // "               <div class=\"replycontainer layui-hide\">\n" +
+            // "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
+            // "                   <input type=\"hidden\" id=\"articleId\" name=\"articleId\" value=\""+id+"\" />\n" +
+            // "                   <input type=\"hidden\" id=\"replyerId\" lay-verify=\"replyerId\" name=\"replyerId\" value=\""+loginUserId+"\" />\n" +
+            // "                       <div class=\"layui-form-item\">\n" +
+            // "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].user.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
+            // "                       </div>\n" +
+            // "                       <div class=\"layui-form-item\">\n" +
+            // "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
+            // "                       </div>\n" +
+            // "                   </form>\n" +
+            // "               </div>";
+                        lis.push( "<li>\n" +
+                            "               <div class=\"comment-parent\">\n" +
+                            "                   <img src=\""+data[i].replyer.userPic+"\" alt=\""+data[i].replyer.nickName+"\" />\n" +
+                            "                   <div class=\"info\">\n" +
+                            "                       <span class=\"username\">"+data[i].replyer.nickName+"</span>\n" +
+                            "回复 <span class=\"username\">@"+data[i].user.nickName+" </span>\n"
+                            );
 
-                            str+="回复 <span class=\"username\">@"+data[i].replyer.nickName+" </span>";
-                            /* if(data[i].user.userId=='1'){
-                             str+="<span class=\"is_bloger\">博主</span>&nbsp;";
-                             }*/
-                            str+= "：<span>"+data[i].content+"</span>\n" +
-                                "  </div>\n" +
-                                "      <p class=\"info\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
-                                "  </div>\n" +
-                "               <!-- 回复表单默认隐藏 -->\n" +
-                "               <div class=\"replycontainer layui-hide\">\n" +
-                "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
-                "                   <input type=\"hidden\" id=\"comment\" name=\"comment\" value=\""+data[i].formId+"\" />\n" +
-                "                   <input type=\"hidden\" id=\"user\" lay-verify=\"userId\" name=\"user\" value=\""+$('#user').val()+"\" />\n" +
-                "                       <div class=\"layui-form-item\">\n" +
-                "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].user.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
-                "                       </div>\n" +
-                "                       <div class=\"layui-form-item\">\n" +
-                "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
-                "                       </div>\n" +
-                "                   </form>\n" +
-                "               </div>";
-
-                        }
-
+                    }else{
                         lis.push( "<li>\n" +
                             "               <div class=\"comment-parent\">\n" +
                             "                   <img src=\""+data[i].replyer.userPic+"\" alt=\""+data[i].replyer.nickName+"\" />\n" +
                             "                   <div class=\"info\">\n" +
                             "                       <span class=\"username\">"+data[i].replyer.nickName+"</span>\n");
-                        /*if(data[i].user.userId=='1'){
-                            lis.push("<span class=\"is_bloger\">博主</span>&nbsp;");
-                        }*/
-                        lis.push("                   </div>\n" +
-                            "                   <div class=\"content\">\n" +
-                            "                       "+data[i].content+"\n" +
-                            "                   </div>\n" +
-                            "                   <p class=\"info info-footer\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
-                            "               </div>\n" +
-                            "               <hr />\n" + str +
-                            "               <!-- 回复表单默认隐藏 -->\n" +
-                            "               <div class=\"replycontainer layui-hide\">\n" +
-                            "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
-                            "                   <input type=\"hidden\" id=\"comment\" name=\"comment\" value=\""+data[i].formId+"\" />\n" +
-                            "                   <input type=\"hidden\" id=\"user\" lay-verify=\"userId\" name=\"user\" value=\""+$('#user').val()+"\" />\n" +
-                            "                       <div class=\"layui-form-item\">\n" +
-                            "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].replyer.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
-                            "                       </div>\n" +
-                            "                       <div class=\"layui-form-item\">\n" +
-                            "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
-                            "                       </div>\n" +
-                            "                   </form>\n" +
-                            "               </div>\n" +
-                            "           </li>");
                     }
+                    if(data[i].replyer.userId=='1'){
+                        str+="<span class=\"is_bloger\">博主</span>&nbsp;";
+                    }
+                    lis.push("      </div>\n" +
+                        "                   <div class=\"content\">\n" +
+                        "                       "+data[i].content+"\n" +
+                        "                   </div>\n" +
+                        "                   <p class=\"info info-footer\"><span class=\"time\">"+fn(data[i].createdAt)+"</span>&nbsp;&nbsp;<a class=\"btn-reply\" style=\"color: #009688;font-size:14px;\" href=\"javascript:;\" onclick=\"btnReplyClick(this)\">回复</a></p>\n" +
+                        "               </div>\n" +
+                        "               <hr />\n" + str +
+                        "               <!-- 回复表单默认隐藏 -->\n" +
+                        "               <div class=\"replycontainer layui-hide\">\n" +
+                        "                   <form class=\"layui-form\" action=\"/reply/list/\">\n" +
+                        "                   <input type=\"hidden\" id=\"articleId\" name=\"articleId\" value=\""+id+"\" />\n" +
+                        "                   <input type=\"hidden\" id=\"userId\" name=\"userId\" value=\""+data[i].userId+"\" />\n" +
+                        "                   <input type=\"hidden\" id=\"userName\" name=\"userName\" value=\""+data[i].replyer.nickName+"\" />\n" +
+                        "                   <input type=\"hidden\" id=\"replyerId\" lay-verify=\"replyerId\" name=\"replyerId\" value=\""+loginUserId+"\" />\n" +
+                        "                       <div class=\"layui-form-item\">\n" +
+                        "                           <textarea name=\"content\" lay-verify=\"replyContent\" placeholder=\"回复  @"+data[i].replyer.nickName+":\" class=\"layui-textarea\" style=\"min-height:80px;\"></textarea>\n" +
+                        "                       </div>\n" +
+                        "                       <div class=\"layui-form-item\">\n" +
+                        "                           <button class=\"layui-btn layui-btn-mini\" lay-submit=\"formReply\" lay-filter=\"formReply\">提交</button>\n" +
+                        "                       </div>\n" +
+                        "                   </form>\n" +
+                        "               </div>\n" +
+                        "           </li>");
+                }
 
-                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
-                    next(lis.join(''), page < 1);
-            }, 500);
+                //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                next(lis.join(''), page < 1);
+            });
         }
     });
 
@@ -213,13 +223,13 @@ layui.use(['jquery','flow','layer','laytpl'], function(){
 $(document).ready(function() {
     $(".fa-file-text").parent().parent().addClass("layui-this");
     //页面初始化得到时候进行赋值
-    var userInfo =  MyLocalStorage.get("userInfo")
+    var userInfo =  MyLocalStorage.get("userInfo");
 
     if(userInfo){
-        $("#user").val(userInfo.id);
+        $("#replyerId").val(userInfo.id);
     }
 
-    $("#article").val(getQueryString("id"));
+    $("#articleId").val(getQueryString("id"));
 });
 
 
@@ -229,24 +239,7 @@ function allCategory(){
 function classifyList(category) {
     window.location.href="./article.html?category="+category;
 }
-//得到文章评论信息
-function queryCommentList(articleId){
-    var url = getCommentList +"?id="+articleId;
-    $.ajax({
-        url:url,
-        type:'get',
-        beforeSend:function () {
-            this.layerIndex = layer.load(0, { shade: [0.5, '#393D49'] });
-        },
-        success:function(ret){
-            var data = ret.result;
-            console.log(data);
-        },
-        complete: function () {
-            layer.close(this.layerIndex);
-        }
-    });
-}
+
 
 //初始化类别信息
 function initCategoryList(){
