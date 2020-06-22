@@ -1,7 +1,8 @@
 var pics = {
   "data": [
-      {"src": "images/pic/1.jpg",   "alt": "紫霞仙子和至尊宝",},
-      {"src": "images/pic/2.jpg",   "alt": "紫霞仙子"}
+      {"src": "images/pic/1.jpg",   "alt": "菠萝宝宝"},
+      {"src": "images/pic/2.jpg",   "alt": "菠萝宝宝"},
+	  {"src": "images/pic/2.jpg",   "alt": "菠萝宝宝"}
    ]};
 layui.use(['jquery','flow'], function () {
 	var $ = layui.jquery;
@@ -11,7 +12,7 @@ layui.use(['jquery','flow'], function () {
     flow.load({
     	elem: '.mixed-main', //流加载容器
     	isAuto: true,
-    	end: '没有更多的图片了~QAQ',
+    	end: '没有更多的图片了',
     	done: function(page,next) {
     		var lis = [];
     		for (var i=0; i<8; i++) {
