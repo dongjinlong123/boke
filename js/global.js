@@ -232,15 +232,23 @@ function formatDate(str) {
 	return new Date(ymd[0],ymd[1]-1||0,ymd[2]||0,hms[0]||0,hms[1]||0,hms[2]||0);
 }
 
+function add0(m){return m<10?'0'+m:m }
 /**
  * 格式化时间戳
  * @param data
  * @returns {string}
  */
-function fn(data){
-    return new Date(data).toLocaleDateString();
+function fn(needTime) {
+    //needTime是整数，否则要parseInt转换
+    var time = new Date(needTime);
+    var y = time.getFullYear();
+    var m = time.getMonth()+1;
+    var d = time.getDate();
+    var h = time.getHours();
+    var mm = time.getMinutes();
+    var s = time.getSeconds();
+    return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
 }
-
 /**
  * 得到url上的参数
  * @param searchKey
@@ -268,9 +276,19 @@ function getQueryString(searchKey){
 }
 
 $(function(){
-    //isUser();
+    //initData(); //测试免登陆
     checkLoginFlag()
 });
+//当前登陆者的ID
+var loginUserId;
+var userInfo =  {"id":73,"userPic":"http://thirdqq.qlogo.cn/g?b=oidb&k=icQib1jxhe7gb1YWficzPV8Hg&s=640&t=1591970691","openId":"F318F6DA7C55DD5485B4BD43B4066FCE","nickName":"拖拉机师傅尼古拉斯","gender":"1","province":null,"city":null,"country":null,"createTime":null,"rawData":null,"signature":null,"encryptedData":null,"iv":null,"code":null};
+function initData(){
+    var loginFlag = MyLocalStorage.get("login");
+    if(loginFlag != true){
+        MyLocalStorage.put("login",true,600);
+        MyLocalStorage.put("userInfo",userInfo,600);
+    }
+}
 
 
 function checkLoginFlag(){
@@ -307,6 +325,7 @@ function checkLoginFlag(){
     }
 }
 function initUserInfo(userInfo){
+    loginUserId = userInfo.id;
     $(".blog-container .blog-user i").hide();
     $(".blog-container .blog-user img").remove();
     $(".blog-container .blog-user").append("<img alt ="+userInfo.nickName+" src="+userInfo.userPic+" />");
